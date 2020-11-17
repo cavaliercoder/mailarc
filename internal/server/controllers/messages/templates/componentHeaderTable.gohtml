@@ -1,0 +1,10 @@
+{{define "ComponentHeaderTable"}}
+<table class="table table-sm table-bordered">
+	{{range $key, $value := .}}
+	<tr>
+		<td class="font-weight-bold text-right text-nowrap">{{$key}}</td>
+		<td class="text-break">{{$value | decodeSlice}}</td>
+	</tr>
+	{{end}}
+</table>
+{{end}}

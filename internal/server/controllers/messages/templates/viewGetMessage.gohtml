@@ -1,0 +1,88 @@
+{{define "View"}}
+<div>
+	<h1>{{.Subject | decode}}</h1>
+	<small class="text-muted">From: {{.From | decode}}</small>
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item">
+			<a
+				class="nav-link"
+				data-toggle="tab"
+				role="tab"
+				aria-controls="headers"
+				aria-selected="true"
+				href="#tab-content"
+			>Message</a>
+		</li>
+		<li class="nav-item">
+			<a
+				class="nav-link"
+				data-toggle="tab"
+				role="tab"
+				aria-controls="headers"
+				aria-selected="true"
+				href="#tab-headers"
+			>Headers</a>
+		</li>
+		<li class="nav-item">
+			<a
+				class="nav-link"
+				data-toggle="tab"
+				role="tab"
+				aria-controls="headers"
+				aria-selected="false"
+				href="#tab-raw"
+			>Raw</a>
+		</li>
+		{{range $index, $part := .Parts}}
+		<li>
+			<a
+				class="nav-link"
+				data-toggle="tab"
+				role="tab"
+				aria-controls="home"
+				aria-selected="true"
+				href="#tab-content-{{$index}}"
+			>{{$part.Name}}</a>
+		</li>
+		{{end}}
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane fade show active" id="tab-content" role="tabpanel" aria-labelledby="headers-tab">
+			<iframe
+				src="/messages/{{$.UID}}/rendered"
+				style="position: relative; width: 100%; min-height: 400px; border: 0;"
+			></iframe>
+		</div>
+		<div class="tab-pane fade show" id="tab-headers" role="tabpanel" aria-labelledby="headers-tab">
+			{{template "ComponentHeaderTable" .Message.Headers}}
+			<pre>{{.Message}}</pre>
+		</div>
+		<div class="tab-pane fade show" id="tab-raw" role="tabpanel" aria-labelledby="raw-tab">
+			<iframe
+				src="/store/messages/{{$.UID}}"
+				style="position: relative; width: 100%; min-height: 400px; border: 0;"	
+			></iframe>
+		</div>
+		{{range $index, $part := .Parts}}
+		<div class="tab-pane fade show" id="tab-content-{{$index}}" role="tabpanel" aria-labelledby="content-{{$index}}-tab">
+			{{template "ComponentHeaderTable" $part.Content.Headers}}
+			{{if $part.Content | isText}}
+			<iframe
+				src="/store/messages/{{$.UID}}/parts{{$part.Content.Path}}"
+				style="position: relative; width: 100%; min-height: 400px; border: 0;"
+			></iframe>
+			{{else if $part.Content | isImage}}
+			<img src="/store/messages/{{$.UID}}/parts{{$part.Content.Path}}" />
+			{{else}}
+			<a
+				class="btn btn-primary"
+				role="button"
+				href="/store/messages/{{$.UID}}/parts{{$part.Content.Path}}"
+			>Download</a>
+			{{end}}
+		</div>
+		{{end}}
+	</div>
+</div>
+{{end}}

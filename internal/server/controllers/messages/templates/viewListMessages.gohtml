@@ -1,0 +1,9 @@
+{{define "View"}}
+<ul>
+  {{range .}}
+  <li>
+    <a href="/messages/{{.}}">{{.}}</a>
+  </li>
+  {{end}}
+</ul>
+{{end}}
