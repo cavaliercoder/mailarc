@@ -20,7 +20,7 @@ clean: clean-tmplink clean-templates clean-mailarc
 #
 
 $(TMPLINK): $(TMPLINK_SOURCES)
-	go build -o $@ github.com/cavaliercoder/mailarc/$(dir $@)
+	go build -o $@ mailarc/$(dir $@)
 
 clean-tmplink:
 	rm -f $(TMPLINK)
@@ -37,7 +37,7 @@ clean-tmplink:
 	$(TMPLINK) -package $(notdir $*) -path $*/templates/ -output $@
 
 mailarc: $(MAILARC_SOURCES)
-	go build -o $@ github.com/cavaliercoder/mailarc/cmd/mailarc
+	go build -o $@ mailarc/cmd/mailarc
 
 clean-templates:
 	rm -f $(TEMPLATES)
@@ -48,10 +48,10 @@ clean-templates:
 #
 
 $(MAILARC): $(MAILARC_SOURCES)
-	go build -o $@ github.com/cavaliercoder/mailarc/$(dir $@)
+	go build -o $@ mailarc/$(dir $@)
 
 install-mailarc: $(MAILARC)
-	go install github.com/cavaliercoder/mailarc/cmd/mailarc
+	go install mailarc/cmd/mailarc
 
 clean-mailarc:
 	rm -f $(MAILARC)

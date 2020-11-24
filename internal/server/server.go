@@ -3,10 +3,11 @@ package server
 import (
 	"net/http"
 
-	messages_controller "github.com/cavaliercoder/mailarc/internal/server/controllers/messages"
-	store_controller "github.com/cavaliercoder/mailarc/internal/server/controllers/store"
-	"github.com/cavaliercoder/mailarc/internal/store"
 	"github.com/gorilla/mux"
+
+	messages_controller "mailarc/internal/server/controllers/messages"
+	store_controller "mailarc/internal/server/controllers/store"
+	"mailarc/internal/store"
 )
 
 func New(mailbox store.Store) http.Handler {

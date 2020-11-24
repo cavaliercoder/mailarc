@@ -1,6 +1,6 @@
 package messages
 
-import "github.com/cavaliercoder/mailarc/internal/mimecontent"
+import "mailarc/internal/mimecontent"
 
 var tmplGetMessage = parseView("GetMessage", ViewGetMessage)
 

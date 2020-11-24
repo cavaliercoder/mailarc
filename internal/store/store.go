@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/cavaliercoder/mailarc/internal/util"
+	"mailarc/internal/util"
 )
 
 var (

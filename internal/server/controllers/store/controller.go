@@ -8,9 +8,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/cavaliercoder/mailarc/internal/mimecontent"
-	"github.com/cavaliercoder/mailarc/internal/store"
 	"github.com/gorilla/mux"
+
+	"mailarc/internal/mimecontent"
+	"mailarc/internal/store"
 )
 
 type controller struct {

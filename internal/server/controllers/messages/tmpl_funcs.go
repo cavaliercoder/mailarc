@@ -4,7 +4,7 @@ import (
 	"mime"
 	"strings"
 
-	"github.com/cavaliercoder/mailarc/internal/mimecontent"
+	"mailarc/internal/mimecontent"
 )
 
 func tmplFuncDecode(s string) string {

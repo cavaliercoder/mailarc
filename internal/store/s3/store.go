@@ -16,8 +16,8 @@ import (
 	aws_session "github.com/aws/aws-sdk-go/aws/session"
 	aws_s3 "github.com/aws/aws-sdk-go/service/s3"
 
-	"github.com/cavaliercoder/mailarc/internal/store"
-	"github.com/cavaliercoder/mailarc/internal/util"
+	"mailarc/internal/store"
+	"mailarc/internal/util"
 )
 
 const suffix = ".eml.gz"
