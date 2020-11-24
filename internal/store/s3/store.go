@@ -7,7 +7,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"log"
 	"mime"
 	"net/url"
 	"strings"
@@ -18,6 +17,7 @@ import (
 	aws_s3 "github.com/aws/aws-sdk-go/service/s3"
 
 	"github.com/cavaliercoder/mailarc/internal/store"
+	"github.com/cavaliercoder/mailarc/internal/util"
 )
 
 const suffix = ".eml.gz"
@@ -59,7 +59,7 @@ func New(s3url string) (store.Store, error) {
 
 func (c *s3Store) Logf(format string, a ...interface{}) {
 	s := fmt.Sprintf(format, a...)
-	log.Printf("[S3] %s", s)
+	util.LogDebugf("[S3] %s", s)
 }
 
 func (c *s3Store) getKey(name string) string {

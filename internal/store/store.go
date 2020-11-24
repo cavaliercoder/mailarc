@@ -8,10 +8,11 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/cavaliercoder/mailarc/internal/util"
 )
 
 var (
@@ -39,7 +40,7 @@ type store struct {
 }
 
 func New(path string) Store {
-	log.Printf("Mailbox store: %s", path)
+	util.LogDebugf("Mailbox store: %s", path)
 	return &store{path: path}
 }
 

@@ -113,7 +113,11 @@ func readBody(r io.Reader, h textproto.MIMEHeader, path string) (c *Content, err
 	}
 
 	// decode media type
-	mediaType, params, err := mime.ParseMediaType(h.Get("Content-Type"))
+	contentType := h.Get("Content-Type")
+	if contentType == "" {
+		contentType = "message/rfc822"
+	}
+	mediaType, params, err := mime.ParseMediaType(contentType)
 	if err != nil {
 		return nil, err
 	}
@@ -131,23 +135,30 @@ func readBody(r io.Reader, h textproto.MIMEHeader, path string) (c *Content, err
 	// read multipart children
 	var child *Content
 	var p *multipart.Part
-	if strings.HasPrefix(mediaType, "multipart/") {
-		mr := multipart.NewReader(r, params["boundary"])
-		for i := 0; ; i++ {
-			p, err = mr.NextPart()
-			if err == io.EOF {
-				err = nil
-				break
-			}
-			if err != nil {
-				return
-			}
-			child, err = readBody(p, p.Header, filepath.Join(path, fmt.Sprint(i)))
-			if err != nil {
-				return
-			}
-			c.Children = append(c.Children, child)
+	if !strings.HasPrefix(mediaType, "multipart/") {
+		return
+	}
+	mr := multipart.NewReader(r, params["boundary"])
+	for i := 0; ; i++ {
+		p, err = mr.NextPart()
+		if err == io.EOF {
+			err = nil
+			break
 		}
+		if err != nil {
+			return
+		}
+		child, err = readBody(p, p.Header, filepath.Join(path, fmt.Sprint(i)))
+		if err == io.ErrUnexpectedEOF {
+			// this can happen when a closing multi-part boundary is omitted
+			err = nil
+			c.Children = append(c.Children, child)
+			return
+		}
+		if err != nil {
+			return
+		}
+		c.Children = append(c.Children, child)
 	}
 	return
 }
