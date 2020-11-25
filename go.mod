@@ -9,7 +9,7 @@ require (
 	github.com/blevesearch/cld2 v0.0.0-20200327141045-8b5f551d37f5 // indirect
 	github.com/cznic/b v0.0.0-20181122101859-a26611c4d92d // indirect
 	github.com/glycerine/go-unsnap-stream v0.0.0-20190901134440-81cf024a9e0a // indirect
-	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/golang/protobuf v1.4.3
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/gorilla/mux v1.8.0
 	github.com/ikawaha/kagome.ipadic v1.1.2 // indirect
