@@ -40,6 +40,14 @@ type MessageEntry struct {
 
 func (c *MessageEntry) Type() string { return MessageEntryType }
 
+func decode(s string) string {
+	v, err := mimecontent.DecodeHeader(s)
+	if err != nil {
+		return ""
+	}
+	return v
+}
+
 func newMessageEntry(uid string, content *mimecontent.Content) *MessageEntry {
 	// parse message date
 	date, err := mimecontent.ParseDateTime(content.Headers.Get("Date"))
@@ -50,9 +58,9 @@ func newMessageEntry(uid string, content *mimecontent.Content) *MessageEntry {
 	m := &MessageEntry{
 		UID:     uid,
 		Date:    date,
-		Subject: content.Headers.Get(MessageFieldSubject),
-		From:    content.Headers.Get(MessageFieldFrom),
-		To:      content.Headers.Get(MessageFieldTo),
+		Subject: decode(content.Headers.Get(MessageFieldSubject)),
+		From:    decode(content.Headers.Get(MessageFieldFrom)),
+		To:      decode(content.Headers.Get(MessageFieldTo)),
 		content: make([]string, 0),
 	}
 
@@ -95,6 +103,9 @@ func GetMessageMapping() (doctype string, dm *mapping.DocumentMapping) {
 	content := bleve.NewTextFieldMapping()
 	content.Analyzer = en.AnalyzerName
 	content.Store = false
+
+	// TODO: hasAttachment
+	// TODO: size
 
 	dm.AddFieldMappingsAt(MessageFieldSubject, subject)
 	dm.AddFieldMappingsAt(MessageFieldFrom, addr)

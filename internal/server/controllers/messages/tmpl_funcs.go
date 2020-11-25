@@ -1,26 +1,49 @@
 package messages
 
 import (
-	"mime"
+	"regexp"
 	"strings"
+	"text/template"
+	"time"
 
 	"mailarc/internal/mimecontent"
 )
 
-func tmplFuncDecode(s string) string {
-	var err error
-	dec := new(mime.WordDecoder)
-	s, err = dec.DecodeHeader(s)
-	if err != nil {
-		panic(err) // TODO
+func TemplFuncs() template.FuncMap {
+	return template.FuncMap{
+		"formatDate":  tmplFormatDate,
+		"formatAddr":  tmplFormatAddr,
+		"decode":      tmplDecode,
+		"decodeSlice": tmplFuncDecodeSlice,
+		"isText":      tmplFuncIsText,
+		"isImage":     tmplFuncIsImage,
 	}
+}
+
+var addrSuffixPattern = regexp.MustCompile(`\s+\<.+?\>$`)
+
+func tmplFormatDate(t time.Time) string {
+	// TODO: To local time?
+	return t.Format("Mon, 02 Jan 2006 15:04")
+}
+
+func tmplFormatAddr(s string) string {
+	s = addrSuffixPattern.ReplaceAllString(s, "")
+	s = strings.Trim(s, "\"")
 	return s
+}
+func tmplDecode(s string) string {
+	v, err := mimecontent.DecodeHeader(s)
+	if err != nil {
+		return s
+	}
+	return v
 }
 
 func tmplFuncDecodeSlice(a []string) string {
 	b := make([]string, len(a))
 	for i := 0; i < len(a); i++ {
-		b[i] = tmplFuncDecode(a[i])
+		b[i] = tmplDecode(a[i])
 	}
 	return strings.Join(b, "<br />\n")
 }

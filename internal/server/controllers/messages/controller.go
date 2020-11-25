@@ -3,6 +3,7 @@ package messages
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"io"
 	"log"
 	"net/http"
@@ -10,17 +11,24 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"mailarc/internal/index"
 	"mailarc/internal/mimecontent"
 	"mailarc/internal/store"
+	"mailarc/internal/util"
 )
 
 type controller struct {
 	mailbox store.ReadStore
+	index   index.Index
 	handler http.Handler
 }
 
-func New(mailbox store.ReadStore, router *mux.Router) http.Handler {
-	c := &controller{mailbox: mailbox, handler: router}
+func New(mailbox store.Store, ix index.Index, router *mux.Router) http.Handler {
+	c := &controller{
+		mailbox: mailbox,
+		index:   ix,
+		handler: router,
+	}
 	router.HandleFunc("/", c.ListMessages)
 	router.HandleFunc("/{uid}", c.GetMessage)
 	router.HandleFunc("/{uid}/", c.GetMessage)
@@ -33,10 +41,12 @@ func (c *controller) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *controller) ListMessages(w http.ResponseWriter, r *http.Request) {
-	messages, err := c.mailbox.List()
+	// TODO: paging
+	messages, err := c.index.Search(context.Background(), "", 0, 10000)
 	if err != nil {
 		panic(err)
 	}
+	util.LogDebugf("Found %d messages", len(messages))
 	if err := tmplListMessages.Execute(w, messages); err != nil {
 		panic(err)
 	}
@@ -106,12 +116,7 @@ func (c *controller) GetMessageRendered(w http.ResponseWriter, r *http.Request) 
 
 func parseView(name, tmpl string) *template.Template {
 	t := template.New(name)
-	t = t.Funcs(template.FuncMap{
-		"decode":      tmplFuncDecode,
-		"decodeSlice": tmplFuncDecodeSlice,
-		"isText":      tmplFuncIsText,
-		"isImage":     tmplFuncIsImage,
-	})
+	t = t.Funcs(TemplFuncs())
 	t = template.Must(t.Parse(tmpl))
 	t = template.Must(t.Parse(ComponentHeaderTable))
 	t = template.Must(t.Parse(LayoutDefault))

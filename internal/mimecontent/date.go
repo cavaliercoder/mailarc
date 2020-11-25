@@ -30,7 +30,7 @@ var dateFormats = []string{
 	"2006-01-02T15:04:05Z07:00",
 	"2006-01-02T15:04:05Z",
 
-	// WTF???
+	// ANSIC-ish
 	"Mon Jan 2 15:04:05 2006",
 }
 

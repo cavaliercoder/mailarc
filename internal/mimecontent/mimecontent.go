@@ -171,3 +171,13 @@ func Read(r *bufio.Reader) (*Content, error) {
 	}
 	return readBody(r, h, "/")
 }
+
+func DecodeHeader(s string) (string, error) {
+	var err error
+	dec := new(mime.WordDecoder)
+	s, err = dec.DecodeHeader(s)
+	if err != nil {
+		return "", err
+	}
+	return s, nil
+}

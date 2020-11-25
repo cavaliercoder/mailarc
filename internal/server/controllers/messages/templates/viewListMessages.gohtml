@@ -1,9 +1,20 @@
 {{define "View"}}
-<ul>
-  {{range .}}
-  <li>
-    <a href="/messages/{{.}}">{{.}}</a>
-  </li>
-  {{end}}
-</ul>
+<table class="table table-sm table-hover">
+  <thead>
+    <tr>
+      <th scope="col">From</th>
+      <th scope="col">Subject</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .}}
+    <tr>
+      <td class="text-nowrap"><a href="/messages/{{.UID}}">{{.From | formatAddr}}</a></td>
+      <td class="text-nowrap"><a href="/messages/{{.UID}}">{{.Subject}}</a></td>
+      <td class="text-nowrap"><a href="/messages/{{.UID}}">{{.Date | formatDate}}</a></td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
 {{end}}
