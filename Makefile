@@ -1,19 +1,20 @@
 TMPLINK = tools/tmplink/tmplink
 TMPLINK_SOURCES = $(wildcard $(basename $(TMPLINK))/*.go)
 
-TEMPLATES = $(patsubst %, %.go, $(shell find . -type d -name templates))
+VIEWS = build/gen/views/views.go
+VIEW_SOURCES = $(wildcard internal/server/views/*.gohtml)
 
 MAILARC = cmd/mailarc/mailarc
 MAILARC_SOURCES = \
 	$(shell find . -name *.go) \
-	$(TEMPLATES)
+	$(VIEWS)
 
 
 all: $(MAILARC)
 
 install: install-mailarc
 
-clean: clean-tmplink clean-templates clean-mailarc
+clean: clean-tmplink clean-views clean-mailarc
 
 #
 # Template code generator
@@ -26,21 +27,15 @@ clean-tmplink:
 	rm -f $(TMPLINK)
 
 #
-# Generate code for all templates
+# Generate code for all views
 #
 
+$(VIEWS): $(TMPLINK) $(VIEW_SOURCES)
+	mkdir -p build/gen/views || :
+	$(TMPLINK) -package views -path internal/server/views/ -output $@
 
-%/templates.go: $(TMPLINK) $(wildcard %/templates/*.gohtml)
-	# $*/templates/*.gohtml
-	# $(wildcard %/templates/*.gohtml)
-	# $^
-	$(TMPLINK) -package $(notdir $*) -path $*/templates/ -output $@
-
-mailarc: $(MAILARC_SOURCES)
-	go build -o $@ mailarc/cmd/mailarc
-
-clean-templates:
-	rm -f $(TEMPLATES)
+clean-views:
+	rm -f $(VIEWS)
 
 
 #

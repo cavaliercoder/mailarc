@@ -1,8 +1,11 @@
 package messages
 
-import "mailarc/internal/mimecontent"
+import (
+	"mailarc/build/gen/views"
+	"mailarc/internal/mimecontent"
+)
 
-var tmplGetMessage = parseView("GetMessage", ViewGetMessage)
+var tmplGetMessage = parseView("GetMessage", views.ViewGetMessage)
 
 type ViewModelContent struct {
 	Name    string

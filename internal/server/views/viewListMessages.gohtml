@@ -1,0 +1,69 @@
+{{define "View"}}
+<table id="message-table" class="table table-sm table-hover mw-100" style="table-layout: fixed;">
+  <thead>
+    <tr>
+      <th scope="col">From</th>
+      <th scope="col">Subject</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+{{end}}
+{{define "Stylesheets"}}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css"
+  integrity="sha384-MhzYknwvie6oPyWsa+FquGDTHidhPxKdh+kRjveUU9sXhKI0FkgQFU7dAGP36mSB"
+  crossorigin="anonymous"
+/>
+{{end}}
+{{define "Scripts"}}
+<script
+  src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"
+  integrity="sha384-XnTxmviuqUy3cHBf+lkYWuTSDlhxCDxd9RgSo5zvzsCq93P9xNa6eENuAITCwxNh"
+  crossorigin="anonymous"
+></script>
+<script
+  src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"
+  integrity="sha384-bX64nQ/u/Jovgh0rdhdtHy2BMWv9TOOds6b4reiVcJ0KcA76JdIxmwar1pN2NsUj"
+  crossorigin="anonymous"
+></script>
+<script type="application/javascript">
+  $(document).ready(function() {
+      $('#message-table').DataTable({
+        ajax: {
+          url: '/json-rpc/search/',
+          dataSrc: '',
+        },
+        columns: [
+          { 
+            name: "from",
+            data: 'from',
+            render: (data) => {
+              return data
+                .replace(/\s+<.*>$/, '') // drop <email>
+                .replace(/^"|"$/g, ''); // drop quotes
+            }
+          },
+          { name: "subject", data: 'subject' },
+          { 
+            name: "date",
+            data: "date",
+            render: (data) => {
+              return Date.parse(data).toString();
+            },
+          },
+        ],
+        order: [[2, 'desc']], // order by date descending
+        pageLength: 50,
+        rowCallback: (row, data, displayNum, displayIndex, dataIndex) => {
+          // clicking row opens message
+          $(row).click(() => { window.location.href = `/messages/${data.uid}` });
+        },
+      });
+  } );
+</script>
+{{end}}

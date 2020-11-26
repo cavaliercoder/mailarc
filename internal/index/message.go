@@ -29,13 +29,13 @@ var MessageFields = []string{
 }
 
 type MessageEntry struct {
-	UID     string
-	Date    time.Time
-	Subject string
-	From    string
-	To      string
+	UID     string    `json:"uid"`
+	Date    time.Time `json:"date"`
+	Subject string    `json:"subject"`
+	From    string    `json:"from"`
+	To      string    `json:"to"`
 
-	content []string
+	content []string `json:"-"`
 }
 
 func (c *MessageEntry) Type() string { return MessageEntryType }

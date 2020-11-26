@@ -11,6 +11,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"mailarc/build/gen/views"
 	"mailarc/internal/index"
 	"mailarc/internal/mimecontent"
 	"mailarc/internal/store"
@@ -118,8 +119,8 @@ func parseView(name, tmpl string) *template.Template {
 	t := template.New(name)
 	t = t.Funcs(TemplFuncs())
 	t = template.Must(t.Parse(tmpl))
-	t = template.Must(t.Parse(ComponentHeaderTable))
-	t = template.Must(t.Parse(LayoutDefault))
+	t = template.Must(t.Parse(views.ComponentHeaderTable))
+	t = template.Must(t.Parse(views.LayoutDefault))
 	return t
 }
 
@@ -129,4 +130,4 @@ func renderServerError(w http.ResponseWriter, r *http.Request, err error) {
 	log.Print(err)
 }
 
-var tmplListMessages = parseView("ListMessages", ViewListMessages)
+var tmplListMessages = parseView("ListMessages", views.ViewListMessages)

@@ -96,13 +96,13 @@ func (c *bleveIndex) Search(
 	ctx context.Context,
 	query string,
 	offset int,
-	size int,
+	limit int,
 ) ([]*MessageEntry, error) {
 	q := getQuery(query)
-	search := bleve.NewSearchRequestOptions(q, size, offset, false)
+	search := bleve.NewSearchRequestOptions(q, limit, offset, false)
 	search.Explain = true
 	search.IncludeLocations = true
-	search.Size = 10000
+	search.Size = limit
 	search.Fields = MessageFields
 	search.SortBy([]string{"-" + MessageFieldDate})
 	results, err := c.index.SearchInContext(ctx, search)
