@@ -33,6 +33,7 @@
 ></script>
 <script type="application/javascript">
   $(document).ready(function() {
+      var dateFormat = new Intl.DateTimeFormat('en-US');
       $('#message-table').DataTable({
         ajax: {
           url: '/json-rpc/search/',
@@ -52,8 +53,11 @@
           { 
             name: "date",
             data: "date",
-            render: (data) => {
-              return Date.parse(data).toString();
+            render: (data, type) => {
+              if (type === "sort") {
+                return Date.parse(data).toString();
+              }
+              return dateFormat.format(Date.parse(data));
             },
           },
         ],
