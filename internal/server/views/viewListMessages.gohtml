@@ -33,7 +33,10 @@
 ></script>
 <script type="application/javascript">
   $(document).ready(function() {
-      var dateFormat = new Intl.DateTimeFormat('en-US');
+      var dateFormat = new Intl.DateTimeFormat('default', {
+        "dateStyle": "medium",
+        "timeStyle": "medium",
+      });
       $('#message-table').DataTable({
         ajax: {
           url: '/json-rpc/search/',
